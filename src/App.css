@@ -1,0 +1,304 @@
+/* 1. RESET GLOBAL: Bloquea bordes blancos y scroll */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; 
+  background-color: #000;
+}
+
+* {
+  box-sizing: border-box; /* Fundamental para que el padding no estire los círculos */
+}
+
+:root {
+  --accent: #ffb347; 
+}
+
+/* 2. CONTENEDOR PRINCIPAL */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; 
+  position: relative;
+  font-family: 'Arial Rounded MT Bold', 'Helvetica', sans-serif;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  transition: background-image 0.5s ease-in-out, filter 0.3s ease;
+  background-color: #222; /* Cambia el negro puro por un gris muy oscuro */
+}
+
+@keyframes bg-pulse {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.02); /* El fondo crece un 2% */
+    filter: brightness(1.1); /* Brilla un poco más en el golpe */
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+.pill-item.active {
+  animation: pill-bounce var(--beat-duration) infinite ease-in-out;
+}
+
+@keyframes pill-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); } /* Saltito al ritmo del beat */
+}
+
+/* 3. LOGO (Independiente para no mover las pastillas) */
+.logo-header {
+  position: absolute;
+  top: 30px;
+  left: 40px;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.logo-main {
+  width: 140px !important;
+  height: auto !important;
+  pointer-events: auto;
+}
+
+/* 4. PANEL DE CONTROLES (IZQUIERDA) */
+.controls-panel {
+  width: 40%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centra el grupo entero verticalmente */
+  padding-left: 8%;
+  padding-top: 80px; /* Espacio suficiente para que el logo no las tape */
+  z-index: 10;
+  gap: 40px; /* Espacio entre la cuadrícula de pastillas y los botones circulares */
+}
+
+/* Cuadrícula de Pastillas */
+.pills-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+  max-width: 420px;
+  margin-top: 20px;
+}
+
+.pill-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.pill-item:hover { transform: scale(1.1); }
+
+.pill-img {
+  width: 55px;
+  height: auto;
+  filter: grayscale(1) opacity(0.6);
+  transition: all 0.4s ease;
+}
+
+.pill-item.active .pill-img {
+  filter: grayscale(0) opacity(1) drop-shadow(0 0 15px white);
+  transform: translateY(-5px);
+}
+
+.pill-label {
+  font-size: 11px;
+  font-weight: bold;
+  color: white;
+  text-transform: uppercase;
+  margin-top: 10px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* 5. CONTROLES CIRCULARES (REMIX Y BPM) */
+.circular-controls {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-top: 10px;
+}
+
+.control-circle {
+  width: 95px;
+  height: 95px;
+  aspect-ratio: 1 / 1; /* FUERZA EL CÍRCULO PERFECTO */
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.remix-btn {
+  background: white;
+  color: #333;
+  font-size: 12px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+/* BPM ESPECÍFICO */
+.bpm-display {
+  background: rgba(255, 255, 255, 0.15); /* Un poco más de contraste */
+  justify-content: space-around;
+  padding: 10px 0;
+}
+
+.remix-btn {
+  background: white;
+  color: #333;
+  font-size: 12px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.remix-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+}
+
+/* Animación de pulso cuando hay algo activo */
+.remix-btn.pulse {
+  animation: pulse-white 2s infinite;
+}
+
+@keyframes pulse-white {
+  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+  70% { box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+
+.remix-btn:active {
+  transform: scale(0.95);
+  filter: brightness(1.2);
+}
+
+.bpm-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.bpm-number { 
+  font-size: 22px; 
+  font-weight: bold; 
+}
+
+.bpm-text small {
+  font-size: 9px;
+  opacity: 0.8;
+}
+
+.bpm-arrow {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 12px; /* Reducido para no estirar el div */
+  opacity: 0.5;
+  transition: all 0.2s ease;
+  width: 100%;
+  padding: 2px 0;
+  line-height: 1;
+}
+
+.bpm-arrow:hover {
+  opacity: 1;
+  transform: scale(1.3);
+  color: var(--flavor-color, white);
+}
+
+/* 6. ESCENA 3D (DERECHA) */
+.scene-container {
+  width: 60%;
+  height: 100vh;
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Transición suave para el cambio de fondo en el contenedor principal */
+.app-container {
+  transition: background-image 0.8s ease-in-out;
+}
+
+/* Footer: Los selectores de sabor */
+.flavor-switcher {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+  z-index: 100;
+}
+
+.flavor-switcher button {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 2px solid white;
+  cursor: pointer;
+  background-color: var(--flavor-color);
+  transition: transform 0.3s ease;
+}
+
+.flavor-switcher button.active {
+  transform: scale(1.4);
+  box-shadow: 0 0 15px var(--flavor-color);
+}
+
+/* Asegura que el canvas no se "coma" los clics de los botones de la izquierda */
+canvas {
+  pointer-events: auto !important;
+}
+
+/* Botón STOP/OFF */
+.stop-btn {
+  background: rgba(0, 0, 0, 0.4); /* Fondo oscuro para contraste */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.stop-btn:hover {
+  transform: scale(1.1);
+  background: #ff4d4d; /* Se pone rojo al pasar el mouse */
+  border-color: white;
+  box-shadow: 0 0 15px rgba(255, 77, 77, 0.5);
+}
+
+.stop-btn:active {
+  transform: scale(0.9);
+}
